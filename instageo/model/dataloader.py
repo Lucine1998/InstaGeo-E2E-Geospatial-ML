@@ -276,6 +276,10 @@ def get_raster_data(
         data = data[bands, ...]
     # For some reasons, some few HLS tiles are not scaled in v2.0.
     # In the following lines, we find and scale them
+    
+    # Convert data to float64 to ensure compatibility with scaling
+    data = data.astype(np.float64)
+
     bands = []
     for band in data:
         if band.max() > 10:
