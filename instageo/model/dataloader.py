@@ -35,19 +35,38 @@ from torchvision import transforms
 from instageo.data.hls_utils import open_mf_tiff_dataset
 
 
+# def random_crop_and_flip(
+#     ims: List[Image.Image], label: Image.Image, im_size: int
+# ) -> Tuple[List[Image.Image], Image.Image]:
+#     """Apply random cropping and flipping transformations to the given images and label.
+
+#     Args:
+#         ims (List[Image.Image]): List of PIL Image objects representing the images.
+#         label (Image.Image): A PIL Image object representing the label.
+
+#     Returns:
+#         Tuple[List[Image.Image], Image.Image]: A tuple containing the transformed list of
+#         images and label.
+#     """
+#     i, j, h, w = transforms.RandomCrop.get_params(ims[0], (im_size, im_size))
+
+#     ims = [transforms.functional.crop(im, i, j, h, w) for im in ims]
+#     label = transforms.functional.crop(label, i, j, h, w)
+
+#     if random.random() > 0.5:
+#         ims = [transforms.functional.hflip(im) for im in ims]
+#         label = transforms.functional.hflip(label)
+
+#     if random.random() > 0.5:
+#         ims = [transforms.functional.vflip(im) for im in ims]
+#         label = transforms.functional.vflip(label)
+
+#     return ims, label
+
 def random_crop_and_flip(
     ims: List[Image.Image], label: Image.Image, im_size: int
 ) -> Tuple[List[Image.Image], Image.Image]:
-    """Apply random cropping and flipping transformations to the given images and label.
-
-    Args:
-        ims (List[Image.Image]): List of PIL Image objects representing the images.
-        label (Image.Image): A PIL Image object representing the label.
-
-    Returns:
-        Tuple[List[Image.Image], Image.Image]: A tuple containing the transformed list of
-        images and label.
-    """
+    """Apply random cropping, flipping, and additional transformations to the images and label."""
     i, j, h, w = transforms.RandomCrop.get_params(ims[0], (im_size, im_size))
 
     ims = [transforms.functional.crop(im, i, j, h, w) for im in ims]
@@ -58,8 +77,17 @@ def random_crop_and_flip(
         label = transforms.functional.hflip(label)
 
     if random.random() > 0.5:
-        ims = [transforms.functional.vflip(im) for im in ims]
+        ims = [transforms.functional.vflip(im) for im in ims]     
         label = transforms.functional.vflip(label)
+
+    # 添加随机旋转
+    angle = random.choice([0, 90, 180, 270])
+    ims = [transforms.functional.rotate(im, angle) for im in ims]
+    label = transforms.functional.rotate(label, angle)
+
+    # 添加颜色抖动
+    color_jitter = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)
+    ims = [color_jitter(im) for im in ims]
 
     return ims, label
 
