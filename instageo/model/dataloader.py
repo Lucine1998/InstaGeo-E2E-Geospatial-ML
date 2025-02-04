@@ -85,9 +85,9 @@ def random_crop_and_flip(
     ims = [transforms.functional.rotate(im, angle) for im in ims]
     label = transforms.functional.rotate(label, angle)
 
-    # 添加颜色抖动
-    color_jitter = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)
-    ims = [color_jitter(im) for im in ims]
+    # # 添加颜色抖动
+    # color_jitter = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)
+    # ims = [color_jitter(im) for im in ims]
 
     return ims, label
 
