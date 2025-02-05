@@ -422,8 +422,7 @@ def main(cfg: DictConfig) -> None:
             accelerator=get_device(),
             max_epochs=cfg.train.num_epochs,
             callbacks=[checkpoint_callback],
-            logger=logger,
-            precision=16,  # 启用混合精度训练
+            logger=logger
         )
 
         trainer.fit(model, train_loader, valid_loader)
